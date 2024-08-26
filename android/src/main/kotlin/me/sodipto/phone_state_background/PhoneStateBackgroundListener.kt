@@ -16,6 +16,8 @@ import java.time.Duration
 import java.time.ZonedDateTime
 import java.util.ArrayList
 import java.lang.reflect.Method
+import android.telecom.TelecomManager
+
 
 interface ITelephony {
     fun endCall(): Boolean
@@ -102,18 +104,9 @@ class PhoneStateBackgroundListener internal constructor(
 
     private fun rejectCall(context: Context) {
         try {
-            val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+            val telecomManager = context.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
+            telecomManager.endCall()
 
-            // Use reflection to access the hidden getITelephony method
-            val c = Class.forName(telephonyManager.javaClass.name)
-            val methods: Array<Method> = c.methods
-
-            val method: Method = c.getDeclaredMethod("endCall")
-            method.isAccessible = true
-
-            // Invoke the 'endCall' method on the TelephonyManager instance
-            val result = method.invoke(telephonyManager) as Boolean
-            
             Log.d("PhoneStateBackgroundPlugin", "Call rejected successfully")
         } catch (e: Exception) {
             Log.e(PhoneStateBackgroundPlugin.PLUGIN_NAME, "Error rejecting call", e)
