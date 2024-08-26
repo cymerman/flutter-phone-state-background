@@ -17,6 +17,12 @@ import java.time.ZonedDateTime
 import java.util.ArrayList
 import java.lang.reflect.Method
 
+interface ITelephony {
+    fun endCall(): Boolean
+    fun answerRingingCall()
+    fun silenceRinger()
+}
+
 enum class CallType {
     INCOMING,OUTGOING;
 }
@@ -102,12 +108,9 @@ class PhoneStateBackgroundListener internal constructor(
             val c = Class.forName(telephonyManager.javaClass.name)
             val getITelephonyMethod: Method = c.getDeclaredMethod("getITelephony")
             getITelephonyMethod.isAccessible = true
-            val telephonyService = getITelephonyMethod.invoke(telephonyManager)
 
-            // Use reflection to access and invoke the endCall method
-            val endCallMethod: Method = telephonyService.javaClass.getDeclaredMethod("endCall")
-            endCallMethod.isAccessible = true
-            endCallMethod.invoke(telephonyService)
+            val telephonyService = method.invoke(telephonyManager) as ITelephony
+            telephonyService.endCall()
 
             Log.d("PhoneStateBackgroundPlugin", "Call rejected successfully")
         } catch (e: Exception) {
