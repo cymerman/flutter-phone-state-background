@@ -106,6 +106,13 @@ class PhoneStateBackgroundListener internal constructor(
 
             // Use reflection to access the hidden getITelephony method
             val c = Class.forName(telephonyManager.javaClass.name)
+            val methods: Array<Method> = clazz.methods
+
+            println("Klass NAMES")
+            for (method in methods) {
+                println("Method: ${method.name} - Parameters: ${method.parameterTypes.joinToString(", ")}")
+            }
+
             val method: Method = c.getDeclaredMethod("getITelephony")
             method.isAccessible = true
 
