@@ -18,13 +18,6 @@ import java.util.ArrayList
 import java.lang.reflect.Method
 import android.telecom.TelecomManager
 
-
-interface ITelephony {
-    fun endCall(): Boolean
-    fun answerRingingCall()
-    fun silenceRinger()
-}
-
 enum class CallType {
     INCOMING,OUTGOING;
 }
