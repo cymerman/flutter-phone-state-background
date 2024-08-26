@@ -93,25 +93,22 @@ class PhoneStateBackgroundListener internal constructor(
     }
 
 
-    
+
     private fun rejectCall(context: Context) {
         try {
             val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
-            // Get the class of the telephony manager
-            val clazz: Class<*> = Class.forName(telephonyManager.javaClass.name)
+            // Use reflection to access the hidden getITelephony method
+            val c = Class.forName(telephonyManager.javaClass.name)
+            val getITelephonyMethod: Method = c.getDeclaredMethod("getITelephony")
+            getITelephonyMethod.isAccessible = true
+            val telephonyService = getITelephonyMethod.invoke(telephonyManager)
 
-            // Get the method 'getITelephony' using reflection
-            val method: Method = clazz.getDeclaredMethod("getITelephony")
-            method.isAccessible = true
+            // Use reflection to access and invoke the endCall method
+            val endCallMethod: Method = telephonyService.javaClass.getDeclaredMethod("endCall")
+            endCallMethod.isAccessible = true
+            endCallMethod.invoke(telephonyService)
 
-            // Invoke the method to get an instance of ITelephony
-            val telephonyService = method.invoke(telephonyManager) as ITelephony
-
-            // Use the telephonyService instance to end the call
-            telephonyService.endCall()
-
-            // Log success
             Log.d("PhoneStateBackgroundPlugin", "Call rejected successfully")
         } catch (e: Exception) {
             Log.e(PhoneStateBackgroundPlugin.PLUGIN_NAME, "Error rejecting call", e)
