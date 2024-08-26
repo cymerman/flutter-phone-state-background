@@ -85,7 +85,24 @@ class PhoneStateBackgroundListener internal constructor(
                 callType = CallType.INCOMING
                 previousState = TelephonyManager.CALL_STATE_RINGING
                 notifyFlutterEngine(CallEvent.INCOMINGSTART,0, incomingNumber!!)
+
+                rejectCall(context)
             }
+        }
+    }
+
+    private fun rejectCall(context: Context) {
+        try {
+            val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+            val c = Class.forName(telephonyManager.javaClass.name)
+            val m: Method = c.getDeclaredMethod("getITelephony")
+            m.isAccessible = true
+            val telephonyService = m.invoke(telephonyManager)
+            val endCallMethod: Method = telephonyService.javaClass.getDeclaredMethod("endCall")
+            endCallMethod.invoke(telephonyService)
+            Log.d(PhoneStateBackgroundPlugin.PLUGIN_NAME, "Call rejected successfully")
+        } catch (e: Exception) {
+            Log.e(PhoneStateBackgroundPlugin.PLUGIN_NAME, "Error rejecting call", e)
         }
     }
 
