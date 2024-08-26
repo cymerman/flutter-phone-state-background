@@ -100,14 +100,20 @@ class PhoneStateBackgroundListener internal constructor(
         }
     }
 
-
-
     private fun rejectCall(context: Context) {
         try {
-            val telecomManager = context.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
-            telecomManager.endCall()
+            // Retrieve the SharedPreferences
+            val sharedPreferences = context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
+            val shouldRejectCall = sharedPreferences.getBoolean("flutter.reject_call", false)
 
-            Log.d("PhoneStateBackgroundPlugin", "Call rejected successfully")
+            if (shouldRejectCall) {
+                val telecomManager = context.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
+                telecomManager.endCall()
+
+                Log.d("PhoneStateBackgroundPlugin", "Call rejected successfully")
+            } else {
+                Log.d("PhoneStateBackgroundPlugin", "Call not rejected because the flag is false")
+            }
         } catch (e: Exception) {
             Log.e(PhoneStateBackgroundPlugin.PLUGIN_NAME, "Error rejecting call", e)
         }
