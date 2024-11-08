@@ -1,4 +1,4 @@
-package me.respondo.phone_state_background
+package me.respondo.get_phone_number
 
 import androidx.annotation.RequiresApi
 import android.os.Build
