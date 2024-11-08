@@ -38,6 +38,7 @@ class PhoneStateBackgroundPlugin : FlutterPlugin, MethodCallHandler, ActivityAwa
   /// when the Flutter Engine is detached from the Activity
   private var channel: MethodChannel? = null
   private var currentActivity: Activity? = null
+  private var activity = WeakReference<Activity>(null)
 
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, PLUGIN_NAME)
@@ -45,7 +46,7 @@ class PhoneStateBackgroundPlugin : FlutterPlugin, MethodCallHandler, ActivityAwa
   }
 
   private val telephonyManager
-    get() = currentActivity.get()!!.getSystemService(Context.TELEPHONY_SERVICE) as
+    get() = activity.get()!!.getSystemService(Context.TELEPHONY_SERVICE) as
             TelephonyManager
 
   override fun onMethodCall(call: MethodCall, result: Result) {
@@ -158,6 +159,7 @@ class PhoneStateBackgroundPlugin : FlutterPlugin, MethodCallHandler, ActivityAwa
 
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
     currentActivity = binding.activity
+    this.activity = WeakReference(binding.activity)
     //binding.addRequestPermissionsResultListener(this)
     //requestPermissions()
   }
