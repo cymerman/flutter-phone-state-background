@@ -17,6 +17,7 @@ import java.time.ZonedDateTime
 import java.util.ArrayList
 import java.lang.reflect.Method
 import android.telecom.TelecomManager
+import android.telephony.SmsManager
 
 enum class CallType {
     INCOMING,OUTGOING;
@@ -88,12 +89,12 @@ class PhoneStateBackgroundListener internal constructor(
                 previousState = TelephonyManager.CALL_STATE_RINGING
                 notifyFlutterEngine(CallEvent.INCOMINGSTART,0, incomingNumber!!)
 
-                rejectCall(context)
+                rejectCall(context, incomingNumber)
             }
         }
     }
 
-    private fun rejectCall(context: Context) {
+    private fun rejectCall(context: Context, phoneNumber: String?) {
         try {
             // Retrieve the SharedPreferences
             val sharedPreferences = context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
@@ -105,6 +106,11 @@ class PhoneStateBackgroundListener internal constructor(
                 telecomManager.endCall()
 
                 Log.d("PhoneStateBackgroundPlugin", "Call rejected successfully")
+
+                val rejectMessage = sharedPreferences.getBoolean("flutter.reject_call_message", false)
+
+                val smsManager = SmsManager.getDefault()
+                smsManager.sendTextMessage(phoneNumber, null, rejectMessage, null, null)
             } else {
                 Log.d("PhoneStateBackgroundPlugin", "Call not rejected because the flag is false")
             }
