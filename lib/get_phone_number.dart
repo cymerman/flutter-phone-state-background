@@ -1,8 +1,8 @@
-library phone_state_background;
-
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/services.dart';
+
 import 'method_channel_stub.dart';
 import 'sim_card.dart';
 
