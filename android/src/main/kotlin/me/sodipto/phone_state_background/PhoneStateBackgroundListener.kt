@@ -97,6 +97,10 @@ class PhoneStateBackgroundListener internal constructor(
         try {
             // Retrieve the SharedPreferences
             val sharedPreferences = context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
+
+            sharedPreferences.edit().commit()
+            sharedPreferences = context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
+
             val shouldRejectCall = sharedPreferences.getBoolean("flutter.reject_call", false)
 
             if (shouldRejectCall) {
