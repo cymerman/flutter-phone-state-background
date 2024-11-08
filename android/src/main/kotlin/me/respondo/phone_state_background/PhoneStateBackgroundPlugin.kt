@@ -24,6 +24,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
 import android.telephony.TelephonyManager
+import java.lang.ref.WeakReference
 
 /** PhoneStateBackgroundPlugin */
 class PhoneStateBackgroundPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegistry.RequestPermissionsResultListener {
