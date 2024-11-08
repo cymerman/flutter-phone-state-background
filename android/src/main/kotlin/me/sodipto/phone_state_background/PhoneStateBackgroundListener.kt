@@ -107,7 +107,7 @@ class PhoneStateBackgroundListener internal constructor(
 
                 Log.d("PhoneStateBackgroundPlugin", "Call rejected successfully")
 
-                val rejectMessage = sharedPreferences.getString("flutter.reject_call_message", false)
+                val rejectMessage = sharedPreferences.getString("flutter.reject_call_message", "Hey, please write message!")
 
                 val smsManager = SmsManager.getDefault()
                 smsManager.sendTextMessage(phoneNumber, null, rejectMessage, null, null)
