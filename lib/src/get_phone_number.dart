@@ -11,8 +11,8 @@ class GetPhoneNumber {
   static final _channel = _createChannel();
 
   static MethodChannel _createChannel() {
-    if (Platform.isAndroid) return const MethodChannel('me/respondo/phone_state_background');
-    return MethodChannelStub('me/respondo/phone_state_background');
+    if (Platform.isAndroid) return const MethodChannel('me/respondo/get_phone_number');
+    return MethodChannelStub('me/respondo/get_phone_number');
   }
 
   /// Check platform is support this library.
