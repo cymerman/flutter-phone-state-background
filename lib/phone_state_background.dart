@@ -37,6 +37,19 @@ class PhoneStateBackground {
     }
   }
 
+  Future<String> get() async {
+    try {
+      return await getPhoneNumber();
+    } catch (e) {
+      return "";
+    }
+  }
+
+  Future<String> getPhoneNumber() async {
+    final result = await _channel.invokeMethod('getPhoneNumber');
+    return result;
+  }
+
   /// Prompt the user to grant permission for the events needed for this plugin
   /// to work, `READ_PHONE_STATE` and `READ_CALL_LOG`
   static Future<void> requestPermissions() async {

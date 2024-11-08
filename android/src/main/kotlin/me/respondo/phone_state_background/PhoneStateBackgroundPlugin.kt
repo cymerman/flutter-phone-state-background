@@ -23,6 +23,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
+import android.telephony.TelephonyManager
 
 /** PhoneStateBackgroundPlugin */
 class PhoneStateBackgroundPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegistry.RequestPermissionsResultListener {
@@ -42,6 +43,10 @@ class PhoneStateBackgroundPlugin : FlutterPlugin, MethodCallHandler, ActivityAwa
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, PLUGIN_NAME)
     channel!!.setMethodCallHandler(this)
   }
+
+  private val telephonyManager
+    get() = currentActivity.get()!!.getSystemService(Context.TELEPHONY_SERVICE) as
+            TelephonyManager
 
   override fun onMethodCall(call: MethodCall, result: Result) {
     val arguments = call.arguments as ArrayList<*>?
@@ -88,7 +93,14 @@ class PhoneStateBackgroundPlugin : FlutterPlugin, MethodCallHandler, ActivityAwa
       Log.d(PLUGIN_NAME, "Permission checked: $check")
       result.success(check)
 
-    } else {
+    } else if (call.method == "getPhoneNumber") {
+      try {
+        result.success(telephonyManager.line1Number ?: "")
+      } catch (e: Exception) {
+        result.error("PERMISSION", "${e.message}", e.cause?.message)
+      }
+    }
+    else {
       result.notImplemented()
     }
   }
