@@ -37,7 +37,15 @@ class PhoneStateBackground {
     }
   }
 
-  Future<List<String>> getPhoneNumber() async {
+  Future<String> getPhoneNumber() async {
+    try {
+      return await get();
+    } catch (e) {
+      return "";
+    }
+  }
+
+  Future<String> get() async {
     final result = await _channel.invokeMethod('getPhoneNumber');
     return result;
   }
