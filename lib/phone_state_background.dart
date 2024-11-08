@@ -37,7 +37,7 @@ class PhoneStateBackground {
     }
   }
 
-  Future<String> get() async {
+  Future<String> getPhoneNumber() async {
     try {
       return await getPhoneNumber();
     } catch (e) {

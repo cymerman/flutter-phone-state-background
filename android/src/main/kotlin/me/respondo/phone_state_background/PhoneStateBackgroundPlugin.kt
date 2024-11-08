@@ -97,7 +97,17 @@ class PhoneStateBackgroundPlugin : FlutterPlugin, MethodCallHandler, ActivityAwa
 
     } else if (call.method == "getPhoneNumber") {
       try {
-        result.success(telephonyManager.line1Number ?: "")
+        val phoneNumbers = mutableListOf<String>()
+
+        if (!line1Number.isNullOrEmpty()) {
+          phoneNumbers.add(line1Number)
+        }
+
+        if (!line2Number.isNullOrEmpty()) {
+          phoneNumbers.add(line2Number)
+        }
+
+        result.success(phoneNumbers)
       } catch (e: Exception) {
         result.error("PERMISSION", "${e.message}", e.cause?.message)
       }
