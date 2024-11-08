@@ -23,14 +23,6 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
-import android.annotation.SuppressLint
-import android.os.Build
-import android.telephony.SubscriptionInfo
-import android.telephony.SubscriptionManager
-import android.telephony.TelephonyManager
-import androidx.annotation.RequiresApi
-import org.json.JSONArray
-import java.lang.ref.WeakReference
 
 /** PhoneStateBackgroundPlugin */
 class PhoneStateBackgroundPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegistry.RequestPermissionsResultListener {
@@ -46,31 +38,14 @@ class PhoneStateBackgroundPlugin : FlutterPlugin, MethodCallHandler, ActivityAwa
   private var channel: MethodChannel? = null
   private var currentActivity: Activity? = null
 
-  private var activity = WeakReference<Activity>(null)
-
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, PLUGIN_NAME)
     channel!!.setMethodCallHandler(this)
   }
 
-  private val telephonyManager
-    get() = activity.get()!!.getSystemService(Context.TELEPHONY_SERVICE) as
-            TelephonyManager
-
   override fun onMethodCall(call: MethodCall, result: Result) {
     val arguments = call.arguments as ArrayList<*>?
-
-    if(call.method == "getPhoneNumber"){
-      try {
-        result.success(telephonyManager.line1Number ?: "")
-      } catch (e: Exception) {
-        result.error("PERMISSION", "${e.message}", e.cause?.message)
-      }
-    }
-    else if(call.method == "getSimCardList"){
-      getSimCardList(result)
-    }
-    else if (call.method == "initialize" && arguments?.size == 2) {
+    if (call.method == "initialize" && arguments?.size == 2) {
       if (!doCheckPermission()) {
         result.error("MISSING_PERMISSION", null, null)
         return
@@ -132,33 +107,6 @@ class PhoneStateBackgroundPlugin : FlutterPlugin, MethodCallHandler, ActivityAwa
     return false
   }
 
-  @SuppressLint("HardwareIds")
-  private fun getSimCardList(result: Result) {
-    val simJsonArray = JSONArray()
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-      for (subscriptionInfo in getSubscriptions()) {
-        val simCard = SimCard(telephonyManager, subscriptionInfo)
-        simJsonArray.put(simCard.toJSON())
-      }
-    }
-    if (simJsonArray.length() == 0) {
-      getSingleSimCard()?.let { simCard ->
-        simJsonArray.put(simCard.toJSON())
-      }
-    }
-
-    result.success(simJsonArray.toString())
-  }
-
-  @SuppressLint("HardwareIds")
-  fun getSingleSimCard(): SimCard? {
-    if (telephonyManager.line1Number.isNullOrBlank()) {
-      Log.e("get_phone_number", "No phone number on single sim card", null)
-      return null
-    }
-    return SimCard(telephonyManager)
-  }
-
   private fun requestPermissions() {
     if (currentActivity?.applicationContext == null)
       return;
@@ -198,8 +146,6 @@ class PhoneStateBackgroundPlugin : FlutterPlugin, MethodCallHandler, ActivityAwa
 
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
     currentActivity = binding.activity
-
-    this.activity = WeakReference(binding.activity)
     //binding.addRequestPermissionsResultListener(this)
     //requestPermissions()
   }
@@ -223,17 +169,5 @@ class PhoneStateBackgroundPlugin : FlutterPlugin, MethodCallHandler, ActivityAwa
       999 -> grantResults != null && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
       else -> false
     }
-  }
-
-  @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
-  fun getSubscriptions(): List<SubscriptionInfo> {
-    val activity = activity.get()
-
-    check(activity != null)
-
-    val subscriptionManager: SubscriptionManager? =
-      activity.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
-
-    return subscriptionManager?.activeSubscriptionInfoList ?: emptyList()
   }
 }
