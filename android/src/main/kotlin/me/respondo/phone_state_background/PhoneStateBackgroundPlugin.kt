@@ -99,11 +99,11 @@ class PhoneStateBackgroundPlugin : FlutterPlugin, MethodCallHandler, ActivityAwa
       try {
         val phoneNumbers = mutableListOf<String>()
 
-        if (!line1Number.isNullOrEmpty()) {
+        if (!telephonyManager.line2Number.isNullOrEmpty()) {
           phoneNumbers.add(line1Number)
         }
 
-        if (!line2Number.isNullOrEmpty()) {
+        if (!telephonyManager.line2Number.isNullOrEmpty()) {
           phoneNumbers.add(line2Number)
         }
 
