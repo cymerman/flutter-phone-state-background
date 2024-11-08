@@ -1,4 +1,4 @@
-group 'me.sodipto.phone_state_background'
+group 'me.respondo.phone_state_background'
 version '1.0-SNAPSHOT'
 
 buildscript {

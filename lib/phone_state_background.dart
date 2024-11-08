@@ -13,7 +13,7 @@ export 'src/error.dart';
 
 class PhoneStateBackground {
   static const MethodChannel _channel =
-      MethodChannel('me.sodipto.phone_state_background');
+      MethodChannel('me.respondo.phone_state_background');
 
   static Future<void> initialize(
     Function(PhoneStateBackgroundEvent, String, int) onEventCallbackDispatcher,
@@ -67,7 +67,7 @@ class PhoneStateBackground {
 void _callbackDispatcher() {
   // 1. Initialize MethodChannel used to communicate with the platform portion of the plugin.
   const MethodChannel _backgroundChannel =
-      MethodChannel('me.sodipto.phone_state_background_listner');
+      MethodChannel('me.respondo.phone_state_background_listner');
 
   // 2. Setup internal state needed for MethodChannels.
   WidgetsFlutterBinding.ensureInitialized();

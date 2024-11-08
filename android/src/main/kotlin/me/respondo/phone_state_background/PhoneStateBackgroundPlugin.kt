@@ -1,4 +1,4 @@
-package me.sodipto.phone_state_background
+package me.respondo.phone_state_background
 
 import androidx.annotation.NonNull
 import android.Manifest
@@ -27,7 +27,7 @@ import io.flutter.plugin.common.PluginRegistry
 /** PhoneStateBackgroundPlugin */
 class PhoneStateBackgroundPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegistry.RequestPermissionsResultListener {
   companion object {
-    const val PLUGIN_NAME = "me.sodipto.phone_state_background"
+    const val PLUGIN_NAME = "me.respondo.phone_state_background"
     const val CALLBACK_SHAREDPREFERENCES_KEY = "phoneStateBackgroundPluginCallbackHandler"
     const val CALLBACK_USER_SHAREDPREFERENCES_KEY = "phoneStateBackgroundCallbackHandlerUser"
   }

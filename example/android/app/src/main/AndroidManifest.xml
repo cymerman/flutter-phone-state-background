@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="me.sodipto.phone_state_background_example">
+    package="me.respondo.phone_state_background_example">
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
    <application
@@ -33,7 +33,7 @@
             android:name="flutterEmbedding"
             android:value="2" />
 
-         <receiver android:name="me.sodipto.phone_state_background.PhoneStateBackgroundServiceReceiver"
+         <receiver android:name="me.respondo.phone_state_background.PhoneStateBackgroundServiceReceiver"
            android:exported="false">
            <intent-filter>
                <action android:name="android.intent.action.PHONE_STATE" />
