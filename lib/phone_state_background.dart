@@ -37,10 +37,6 @@ class PhoneStateBackground {
     }
   }
 
-  Future<void> stopCallState() async {
-    await _channel.invokeMethod('stopcallstate');
-  }
-
   Future<String> getPhoneNumber() async {
     try {
       return await get();
